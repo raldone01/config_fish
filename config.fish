@@ -1,0 +1,101 @@
+#bass source .bash_profile
+#bass source $HOME/.cargo/env
+
+# also install nerd-fonts for exa
+# yay -Syu keychain figlet boxes
+# cargo install viu exa
+# viu sadly does not support max size and instead ruins the aspect ratio
+
+fish_add_path ~/.cargo/bin
+
+if grep -qi microsoft /proc/version && grep -qi "Arch Linux" /etc/os-release
+  # fixes valgrind
+  set -x DEBUGINFOD_URLS "https://debuginfod.archlinux.org"
+end
+
+# set -g pic_folders /mnt/i/nextcloud/pictures/stock/unsplash-animal-exoctic /mnt/i/nextcloud/pictures/stock/unsplash-animal-exoctic-auto
+# alias image_viewer viu
+source .config/fish/machine-config.fish
+
+set -x CPM_SOURCE_CACHE ~/cpm_source_cache
+
+if status --is-interactive
+
+    # Commands to run in interactive sessions can go here
+    if grep -qi microsoft /proc/version
+      eval (keychain --eval --agents ssh,gpg --quiet --nogui -Q --timeout 45)
+      # echo "WSL"
+    else
+      # echo "native Linux"
+    end
+
+    alias ls "exa --icons"
+    alias la "exa --icons -a"
+    alias tree "exa --icons --tree"
+
+    function rand_pic_file
+      set -g last_pic_file (find $pic_folders -type f \( -iname \*.jpg -o -iname \*.jpeg -o -iname \*.png \) | shuf -n 1)
+      echo $last_pic_file
+
+      function pic_not_nice
+        rm -i "$last_pic_file"
+        functions -e pic_not_nice
+      end
+    end
+
+    function calm
+      set -l rand_pic_file (rand_pic_file)
+      set -l filename (basename $rand_pic_file)
+      echo "Featured pic $filename (Run pic_not_nice to delete)"
+      image_viewer $argv $rand_pic_file
+    end
+
+    function update
+      yay --sudo-loop -Syu
+      rustup self update
+      rustup update
+    end
+
+    function fish_greeting
+      set -l rand_pic_file (rand_pic_file)
+      set -l terminal_height (tput lines)
+      set -l terminal_width (tput cols)
+
+      function internal_before_pic_text -S
+        #print login message
+
+        if test $terminal_width -gt 134;
+           or test $terminal_height -lt 53
+          #print it in one line
+          set date_str (date +"%d/%b/%Y %H:%M:%S")
+        else
+          #print it in two lines
+          set date_str "$(printf "%s\n%s" (date +"%d/%b/%Y") (date +"%H:%M:%S"))"
+        end
+
+        if test $terminal_width -gt 77;
+           and test $terminal_height -gt 53
+          printf "%s" $date_str | figlet -t | boxes -d scroll
+        else
+          printf "%s\n" $date_str
+        end
+
+        echo "Use calm to calm. Powered by fish the friendly interactive shell."
+        set -l filename (basename $rand_pic_file)
+        echo "Featured pic $filename (Run pic_not_nice to delete)"
+      end
+      function internal_after_pic_text -S
+      end
+      set -l before_pic_text (internal_before_pic_text)
+      set -l after_pic_text (internal_after_pic_text)
+
+      set -l before_lines (printf "%s\n" $before_pic_text | wc -l)
+      set -l after_lines (printf "%s\n" $after_pic_text | wc -l)
+
+      # echo "$terminal_height $before_lines $after_lines"
+      set -l image_height (math $terminal_height - $before_lines - $after_lines)
+      printf "%s\n" $before_pic_text
+      image_viewer -h "$image_height" -w "$terminal_width" "$rand_pic_file"
+      printf "%s" $after_pic_text
+    end
+end
