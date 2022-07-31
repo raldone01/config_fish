@@ -13,8 +13,7 @@ if grep -qi microsoft /proc/version && grep -qi "Arch Linux" /etc/os-release
   set -x DEBUGINFOD_URLS "https://debuginfod.archlinux.org"
 end
 
-# set -g pic_folders /mnt/i/nextcloud/pictures/stock/unsplash-animal-exoctic /mnt/i/nextcloud/pictures/stock/unsplash-animal-exoctic-auto
-# alias image_viewer viu
+# don't forget to create this file
 source .config/fish/machine-config.fish
 
 set -x CPM_SOURCE_CACHE ~/cpm_source_cache
