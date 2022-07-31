@@ -8,7 +8,8 @@
 
 fish_add_path ~/.cargo/bin
 
-if grep -qi microsoft /proc/version && grep -qi "Arch Linux" /etc/os-release
+if grep -qi microsoft /proc/version
+   and grep -qi "Arch Linux" /etc/os-release
   # fixes valgrind
   set -x DEBUGINFOD_URLS "https://debuginfod.archlinux.org"
 end
@@ -50,7 +51,12 @@ if status --is-interactive
     end
 
     function update
-      yay --sudo-loop -Syu
+      if grep -qi "Arch Linux" /etc/os-release
+        yay --sudo-loop -Syu
+      else if grep -qi "Debian" /etc/os-release
+        echo "Running apt-get update && apt-get upgrade"
+        sudo fish -c "apt-get update && apt-get upgrade"
+      end
       rustup self update
       rustup update
     end
