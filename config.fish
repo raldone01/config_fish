@@ -8,7 +8,7 @@
 
 fish_add_path ~/.cargo/bin
 
-if grep -qi microsoft /proc/version
+if grep -qi microsoft /proc/version;
    and grep -qi "Arch Linux" /etc/os-release
   # fixes valgrind
   set -x DEBUGINFOD_URLS "https://debuginfod.archlinux.org"
