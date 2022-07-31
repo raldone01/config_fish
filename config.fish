@@ -14,7 +14,7 @@ if grep -qi microsoft /proc/version && grep -qi "Arch Linux" /etc/os-release
 end
 
 # don't forget to create this file
-source .config/fish/machine-config.fish
+source ~/.config/fish/machine-config.fish
 
 set -x CPM_SOURCE_CACHE ~/cpm_source_cache
 
