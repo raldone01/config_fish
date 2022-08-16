@@ -10,6 +10,8 @@ fish_add_path ~/.cargo/bin
 
 if grep -qi microsoft /proc/version;
    and grep -qi "Arch Linux" /etc/os-release
+  #bass source /etc/profile.d/debuginfod/archlinux.urls
+  #https://bbs.archlinux.org/viewtopic.php?id=276422 
   # fixes valgrind
   set -x DEBUGINFOD_URLS "https://debuginfod.archlinux.org"
 end
@@ -81,7 +83,7 @@ if status --is-interactive
         end
 
         if test $terminal_width -gt 77;
-           and test $terminal_height -gt 53
+           and test $terminal_height -gt 40
           printf "%s" $date_str | figlet -t | boxes -d scroll
         else
           printf "%s\n" $date_str
@@ -105,4 +107,14 @@ if status --is-interactive
       image_viewer -h "$image_height" -w "$terminal_width" "$rand_pic_file"
       printf "%s" $after_pic_text
     end
+end
+
+
+
+fish_add_path ~/.cargo/bin
+set -x CPM_SOURCE_CACHE ~/cpm_source_cache
+
+if status --is-interactive
+    eval (keychain --eval --agents ssh,gpg --quiet --nogui -Q --timeout 45)
+    # Commands to run in interactive sessions can go here
 end
