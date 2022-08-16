@@ -108,13 +108,3 @@ if status --is-interactive
       printf "%s" $after_pic_text
     end
 end
-
-
-
-fish_add_path ~/.cargo/bin
-set -x CPM_SOURCE_CACHE ~/cpm_source_cache
-
-if status --is-interactive
-    eval (keychain --eval --agents ssh,gpg --quiet --nogui -Q --timeout 45)
-    # Commands to run in interactive sessions can go here
-end
