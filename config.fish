@@ -9,7 +9,7 @@
 fish_add_path ~/.cargo/bin
 
 if grep -qi microsoft /proc/version;
-   and grep -qi "Arch Linux" /etc/os-release
+    and grep -qi "Arch Linux" /etc/os-release
   #bass source /etc/profile.d/debuginfod/archlinux.urls
   #https://bbs.archlinux.org/viewtopic.php?id=276422 
   # fixes valgrind
@@ -22,14 +22,8 @@ source ~/.config/fish/machine-config.fish
 set -x CPM_SOURCE_CACHE ~/cpm_source_cache
 
 if status --is-interactive
-
-    # Commands to run in interactive sessions can go here
-    if grep -qi microsoft /proc/version
-      eval (keychain --eval --agents ssh,gpg --quiet --nogui -Q --timeout 45)
-      # echo "WSL"
-    else
-      # echo "native Linux"
-    end
+	  # note add AddKeysToAgent yes to ~/.ssh/config
+    eval (keychain --eval --agents ssh,gpg --quiet --nogui -Q --timeout 45)
 
     alias ls "exa --icons"
     alias la "exa --icons -a"
@@ -74,7 +68,7 @@ if status --is-interactive
         #print login message
 
         if test $terminal_width -gt 134;
-           or test $terminal_height -lt 53
+            or test $terminal_height -lt 53
           #print it in one line
           set date_str (date +"%d/%b/%Y %H:%M:%S")
         else
@@ -83,7 +77,7 @@ if status --is-interactive
         end
 
         if test $terminal_width -gt 77;
-           and test $terminal_height -gt 40
+            and test $terminal_height -gt 40
           printf "%s" $date_str | figlet -t | boxes -d scroll
         else
           printf "%s\n" $date_str
