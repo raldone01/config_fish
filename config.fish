@@ -7,6 +7,7 @@
 # viu sadly does not support max size and instead ruins the aspect ratio
 
 fish_add_path ~/.cargo/bin
+fish_add_path ~/.local/bin
 
 if grep -qi microsoft /proc/version;
     and grep -qi "Arch Linux" /etc/os-release
