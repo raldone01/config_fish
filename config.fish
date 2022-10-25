@@ -1,11 +1,3 @@
-# bass source .bash_profile
-# bass source $HOME/.cargo/env
-
-# also install nerd-fonts for exa
-# yay -Syu keychain figlet boxes
-# cargo install viu exa
-# viu sadly does not support max size and instead ruins the aspect ratio
-
 fish_add_path ~/.cargo/bin
 fish_add_path ~/.local/bin
 
@@ -20,7 +12,9 @@ end
 # don't forget to create this file
 source ~/.config/fish/machine-config.fish
 
-set -x CPM_SOURCE_CACHE ~/cpm_source_cache
+if not set -q CPM_SOURCE_CACHE
+  set -x CPM_SOURCE_CACHE ~/.cpm_source_cache
+end
 
 if status --is-interactive
 	  # note add AddKeysToAgent yes to ~/.ssh/config

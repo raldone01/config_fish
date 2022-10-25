@@ -2,10 +2,18 @@ set -g pic_folders /mnt/i/nextcloud/pictures/stock/animals /mnt/i/nextcloud/pict
 
 alias image_viewer tiv # https://github.com/stefanhaustein/TerminalImageViewer is the recommended terminal image viewer
 # optionally supports viu but the aspect ratio is not working properly
+# viu sadly does not support max size and instead ruins the aspect ratio
 # alias image_viewer viu
+
+# Uncomment to source bash environment variables (not recommended)
+# bass source .bash_profile
+# bass source $HOME/.cargo/env
 
 # Uncomment if you have installed esp-idf
 # set -x IDF_PATH ~/esp/esp-idf
 # set -x ADF_PATH ~/esp/esp-adf
+
+# set -x VISUAL "/usr/bin/nano"
+# set -x EDITOR "$VISUAL"
 
 # Other machine specific environment variables go here
