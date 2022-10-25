@@ -1,7 +1,7 @@
 set -g pic_folders /mnt/i/nextcloud/pictures/stock/animals /mnt/i/nextcloud/pictures/stock/anime
-alias image_viewer tiv
 
-# optionally supports viu but the aspect ratio is off
+alias image_viewer tiv # https://github.com/stefanhaustein/TerminalImageViewer is the recommended terminal image viewer
+# optionally supports viu but the aspect ratio is not working properly
 # alias image_viewer viu
 
 # Uncomment if you have installed esp-idf

@@ -1,5 +1,5 @@
-#bass source .bash_profile
-#bass source $HOME/.cargo/env
+# bass source .bash_profile
+# bass source $HOME/.cargo/env
 
 # also install nerd-fonts for exa
 # yay -Syu keychain figlet boxes
@@ -11,8 +11,8 @@ fish_add_path ~/.local/bin
 
 if grep -qi microsoft /proc/version;
     and grep -qi "Arch Linux" /etc/os-release
-  #bass source /etc/profile.d/debuginfod/archlinux.urls
-  #https://bbs.archlinux.org/viewtopic.php?id=276422 
+  # bass source /etc/profile.d/debuginfod/archlinux.urls
+  # https://bbs.archlinux.org/viewtopic.php?id=276422
   # fixes valgrind
   set -x DEBUGINFOD_URLS "https://debuginfod.archlinux.org"
 end
@@ -29,6 +29,7 @@ if status --is-interactive
     alias ls "exa --icons"
     alias la "exa --icons -a"
     alias tree "exa --icons --tree"
+    alias yay "yay --sudoloop"
 
     function rand_pic_file
       set -g last_pic_file (find $pic_folders -type f \( -iname \*.jpg -o -iname \*.jpeg -o -iname \*.png \) | shuf -n 1)
@@ -58,6 +59,7 @@ if status --is-interactive
       rustup update
       # https://stackoverflow.com/a/66049504/4479969
       cargo install $(cargo install --list | egrep '^[a-z0-9_-]+ v[0-9.]+:$' | cut -f1 -d' ')
+			fisher update
     end
 
     function fish_greeting
@@ -66,14 +68,14 @@ if status --is-interactive
       set -l terminal_width (tput cols)
 
       function internal_before_pic_text -S
-        #print login message
+        # print login message
 
         if test $terminal_width -gt 134;
             or test $terminal_height -lt 53
           #print it in one line
           set date_str (date +"%d/%b/%Y %H:%M:%S")
         else
-          #print it in two lines
+          # print it in two lines
           set date_str "$(printf "%s\n%s" (date +"%d/%b/%Y") (date +"%H:%M:%S"))"
         end
 
