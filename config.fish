@@ -52,7 +52,7 @@ if status --is-interactive
       rustup self update
       rustup update
       # https://stackoverflow.com/a/66049504/4479969
-      cargo install $(cargo install --list | egrep '^[a-z0-9_-]+ v[0-9.]+:$' | cut -f1 -d' ')
+      cargo install $(cargo install --list | grep -E '^[a-z0-9_-]+ v[0-9.]+:$' | cut -f1 -d' ')
 			fisher update
     end
 
