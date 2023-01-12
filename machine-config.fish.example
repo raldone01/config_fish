@@ -15,5 +15,6 @@ alias image_viewer tiv # https://github.com/stefanhaustein/TerminalImageViewer i
 
 # set -x VISUAL "/usr/bin/nano"
 # set -x EDITOR "$VISUAL"
+# set -x BEETSDIR "/path/to/beet-cfg"
 
 # Other machine specific environment variables go here
