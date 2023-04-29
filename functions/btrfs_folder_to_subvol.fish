@@ -1,8 +1,8 @@
 #!/usr/bin/fish
 
-function folder_to_subvolume --description "Convert a folder to a subvolume with CoW disabled" --argument folder_path
+function btrfs_folder_to_subvolume --description "Convert a folder to a subvolume with CoW disabled" --argument folder_path
     if test -z "$folder_path"
-        printf "Usage: folder_to_subvolume /path/to/folder\n"
+        printf "Usage: btrfs_folder_to_subvolume /path/to/folder\n"
         return 1
     end
 
@@ -28,5 +28,5 @@ end
 if test (count $argv) -eq 1
     folder_to_subvolume $argv[1]
 else
-    printf "Usage: folder_to_subvolume /path/to/folder\n"
+    printf "Usage: btrfs_folder_to_subvolume /path/to/folder\n"
 end
