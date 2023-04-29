@@ -17,6 +17,13 @@ if not set -q CPM_SOURCE_CACHE
     set -x CPM_SOURCE_CACHE ~/.cpm_source_cache
 end
 
+# check if podman is installed
+if type -q podman
+    if test -S "$XDG_RUNTIME_DIR/podman/podman.sock"
+        set -x DOCKER_HOST "unix://$XDG_RUNTIME_DIR/podman/podman.sock"
+    end
+end
+
 if status --is-interactive
     # note add AddKeysToAgent yes to ~/.ssh/config
     eval (keychain --eval --agents ssh,gpg --quiet --nogui -Q --timeout 45)
