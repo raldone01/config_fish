@@ -41,3 +41,7 @@ function monitor_memory_usage --description "Monitor memory usage of a process"
     end
 
 end
+
+if test ! "$_" = source
+    monitor_memory_usage $argv
+end

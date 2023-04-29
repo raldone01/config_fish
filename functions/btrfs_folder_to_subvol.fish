@@ -1,26 +1,82 @@
-#!/usr/bin/fish
-
-function btrfs_folder_to_subvol --description "Convert a folder to a subvolume with CoW disabled" --argument folder_path
+#!/bin/fish
+function btrfs_folder_to_subvol --description "Convert a folder to a subvolume" --argument folder_path
     if test -z "$folder_path"
         printf "Usage: btrfs_folder_to_subvol /path/to/folder\n"
         return 1
     end
 
+    # remove trailing slashes
+    set folder_path (string trim -r -c "/" $folder_path)
+
     set backup_path (string join "" "$folder_path" "_backup")
-    set subvol_path (string join "" "$folder_path" "_subvol")
+    set subvol_path (string join "" "$folder_path" "_volume")
 
-    # Create snapshot of folder as a subvolume
-    sudo btrfs subvolume snapshot "$folder_path" "$subvol_path"
+    # Create a new subvolume
+    btrfs subvolume create "$subvol_path"
 
-    # Disable CoW on the new subvolume
-    sudo chattr +C "$subvol_path"
+    # Copy the attributes of the original folder to the new subvolume
+    rsync -ptgo -A -X -d --no-recursive "$folder_path/" "$subvol_path"
 
-    # Move the original folder to backup location
-    sudo mv "$folder_path" "$backup_path"
+    # Copy the contents of the original folder to the new subvolume using reflink
+    cp --reflink=auto -p -R "$folder_path"/{.,}* "$subvol_path/"
+
+    # Move the original folder to the backup location
+    mv "$folder_path" "$backup_path"
 
     # Move the subvolume to the original folder location
-    sudo mv "$subvol_path" "$folder_path"
+    mv "$subvol_path/" "$folder_path"
 
-    echo "The folder has been converted to a subvolume with CoW disabled."
+    echo "The folder has been converted to a subvolume."
     echo "A backup of the original folder is available at $backup_path"
+
+    # Common directories to exclude from CoW and snapshots
+    # /var/cache/
+    # /var/log
+    # /var/cache/binpkgs
+    # /var/db/repos
+
+    function read_confirm --argument prompt
+        while true
+            read -l -P "$prompt? [y/N]" confirm
+
+            switch $confirm
+                case Y y
+                    return 0
+                case '' N n
+                    return 1
+            end
+        end
+    end
+
+    # Ask user if Cow should be disabled on the new subvolume
+    if read_confirm "Disable CoW on the new subvolume"
+        chattr +C "$folder_path"
+    end
+
+    # Ask user if backups should be deleted
+    if read_confirm "Delete the backup"
+        rm -rf "$backup_path"
+    end
 end
+
+if test ! "$_" = source
+    btrfs_folder_to_subvol $argv
+end
+
+# Test stuff
+# sudo rm -rf test_folder*
+# source /home/main/.config/fish/functions/btrfs_folder_to_subvol.fish
+# mkdir test_folder
+# touch test_folder/test_file
+# touch test_folder/.test_hidden_file
+# mkdir test_folder/.oof
+# touch test_folder/.oof/.test_hidden_file
+#
+# tree -a test_folder
+#
+# btrfs subvol create test_folder_volume
+# cp --reflink=auto -R test_folder/{.,}* test_folder_volume/
+# mv test_folder test_folder_backup
+# mv test_folder_volume/ test_folder
+#
+# tree -a test_folder
