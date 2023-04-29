@@ -1,5 +1,5 @@
 #!/bin/fish
-function monitor_memory_usage --no-scope-shadowing --description "Monitor memory usage of a process"
+function monitor_memory_usage --description "Monitor memory usage of a process"
     argparse "p/pid=!_validate_int --min 0" "n/timestep=!_validate_int --min 0" -- $argv
 
     set -l pid $_flag_pid
