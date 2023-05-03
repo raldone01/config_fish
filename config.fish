@@ -53,7 +53,7 @@ if status --is-interactive
     function update
         echo "Updating system packages..."
         if grep -qi "Arch Linux" /etc/os-release
-            yay --sudoloop -Syu
+            yay --sudoloop -Syu --devel
         else if grep -qi Debian /etc/os-release
             echo "Running apt-get update && apt-get upgrade"
             sudo fish -c "apt-get update && apt-get upgrade"
