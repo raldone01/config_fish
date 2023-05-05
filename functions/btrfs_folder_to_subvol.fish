@@ -6,10 +6,10 @@ function btrfs_folder_to_subvol --description "Convert a folder to a subvolume" 
     end
 
     # remove trailing slashes
-    set folder_path (string trim -r -c "/" $folder_path)
+    set -l folder_path (string trim -r -c "/" $folder_path)
 
-    set backup_path (string join "" "$folder_path" "_backup")
-    set subvol_path (string join "" "$folder_path" "_volume")
+    set -l backup_path (string join "" "$folder_path" "_backup")
+    set -l subvol_path (string join "" "$folder_path" "_volume")
 
     # Create a new subvolume
     btrfs subvolume create "$subvol_path"

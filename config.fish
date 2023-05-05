@@ -50,38 +50,6 @@ if status --is-interactive
         image_viewer $argv $rand_pic_file
     end
 
-    function update
-        echo "Updating system packages..."
-        if grep -qi "Arch Linux" /etc/os-release
-            yay --sudoloop -Syu --devel
-        else if grep -qi Debian /etc/os-release
-            echo "Running apt-get update && apt-get upgrade"
-            sudo fish -c "apt-get update && apt-get upgrade"
-        else
-            echo "Failed to update system packages."
-            echo "Unknown system package manager or distribution."
-        end
-        if type -q rustup
-            echo "Updating rustup..."
-            rustup self update
-            echo "Updating the rust toolchain..."
-            rustup update
-        end
-        # https://stackoverflow.com/a/66049504/4479969
-        if type -q cargo
-            echo "Updating the crates installed with 'cargo install'..."
-            cargo install $(cargo install --list | grep -E '^[a-z0-9_-]+ v[0-9.]+:$' | cut -f1 -d' ')
-        end
-        if type -q fisher
-            echo "Updating the fisher fish plugins..."
-            fisher update
-        end
-        if type -q flatpak
-            echo "Updating the installed flatpaks..."
-            flatpak update
-        end
-    end
-
     function fish_greeting
         set -l rand_pic_file (rand_pic_file)
         set -l terminal_height (tput lines)
