@@ -4,7 +4,7 @@ function update --description "Update the system" --argument build_kernels "Buil
     if grep -qi "Arch Linux" /etc/os-release
         set -le pacman_options
         if test -z "$build_kernels"
-            set -a pacman_options --ignore "linux-*-git" --ignore "linux-*-git-headers" --ignore "linux-*-git-docs" --ignore linux-git linux-git-headers linux-git-docs
+            set -a pacman_options --ignore "linux-*-git" --ignore "linux-*-git-headers" --ignore "linux-*-git-docs" --ignore linux-git --ignore linux-git-headers --ignore linux-git-docs
         end
         if type -q yay
             yay --sudoloop -Syu --devel $pacman_options
