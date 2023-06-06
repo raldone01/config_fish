@@ -1,12 +1,12 @@
 #!/bin/fish
-function monitor_memory_usage --description "Monitor memory usage of a process"
+function fish_monitor_memory_usage --description "Monitor memory usage of a process"
     argparse "p/pid=!_validate_int --min 0" "n/timestep=!_validate_int --min 0" -- $argv
 
     set -l pid $_flag_pid
     set -l timestep $_flag_timestep
 
     if test $status -ne 0 -o -z "$_flag_pid"
-        printf "Usage: monitor_memory_usage -p <pid> [-n <timestep>]\n"
+        printf "Usage: fish_monitor_memory_usage -p <pid> [-n <timestep>]\n"
         return 1
     end
 
@@ -43,5 +43,5 @@ function monitor_memory_usage --description "Monitor memory usage of a process"
 end
 
 if test ! "$_" = source
-    monitor_memory_usage $argv
+    fish_monitor_memory_usage $argv
 end

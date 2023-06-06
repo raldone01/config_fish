@@ -1,7 +1,7 @@
 #!/bin/fish
-function btrfs_folder_to_subvol --description "Convert a folder to a subvolume" --argument folder_path
+function fish_btrfs_folder_to_subvol --description "Convert a folder to a subvolume" --argument folder_path
     if test -z "$folder_path"
-        printf "Usage: btrfs_folder_to_subvol /path/to/folder\n"
+        printf "Usage: fish_btrfs_folder_to_subvol /path/to/folder\n"
         return 1
     end
 
@@ -60,7 +60,7 @@ function btrfs_folder_to_subvol --description "Convert a folder to a subvolume" 
 end
 
 if test ! "$_" = source
-    btrfs_folder_to_subvol $argv
+    fish_btrfs_folder_to_subvol $argv
 end
 
 # Test stuff

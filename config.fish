@@ -10,8 +10,10 @@ if grep -qi microsoft /proc/version;
     set -x DEBUGINFOD_URLS "https://debuginfod.archlinux.org"
 end
 
-# don't forget to create this file
-source ~/.config/fish/machine-config.fish
+# check if the file exists
+if test -f ~/.config/fish/machine-config.fish
+    source ~/.config/fish/machine-config.fish
+end
 
 if not set -q CPM_SOURCE_CACHE
     set -x CPM_SOURCE_CACHE ~/.cpm_source_cache
@@ -28,68 +30,51 @@ if status --is-interactive
     # note add AddKeysToAgent yes to ~/.ssh/config
     eval (keychain --eval --agents ssh,gpg --quiet --nogui -Q --timeout 45)
 
-    alias ls "exa --icons"
-    alias la "exa --icons -a"
-    alias tree "exa --icons --tree"
-    alias yay "yay --sudoloop"
-
-    function rand_pic_file
-        set -g last_pic_file (find $pic_folders -type f \( -iname \*.jpg -o -iname \*.jpeg -o -iname \*.png \) | shuf -n 1)
-        echo $last_pic_file
-
-        function pic_not_nice
-            rm -i "$last_pic_file"
-            functions -e pic_not_nice
+    if test -n "$EDITOR"
+        if type -q nano
+            set -l nano_full_path (command -v nano)
+            set -x EDITOR "$nano_full_path"
+            set -x VISUAL "$nano_full_path"
+        else if type -q nvim
+            set -l nvim_full_path (command -v nvim)
+            set -x EDITOR "$nvim_full_path"
+            set -x VISUAL "$nvim_full_path"
+        else if type -q vim
+            set -l vim_full_path (command -v vim)
+            set -x EDITOR "$nvim_full_path"
+            set -x VISUAL "$nvim_full_path"
         end
     end
 
-    function calm
-        set -l rand_pic_file (rand_pic_file)
-        set -l filename (basename $rand_pic_file)
-        echo "Featured pic $filename (Run pic_not_nice to delete)"
-        image_viewer $argv $rand_pic_file
+    if type -q nvim
+        alias vi nvim
+        alias vim nvim
+    else if type -q vim
+        alias vi vim
     end
 
-    function fish_greeting
-        set -l rand_pic_file (rand_pic_file)
-        set -l terminal_height (tput lines)
-        set -l terminal_width (tput cols)
-
-        function internal_before_pic_text -S
-            # print login message
-
-            if test $terminal_width -gt 134;
-                or test $terminal_height -lt 53
-                #print it in one line
-                set date_str (date +"%d/%b/%Y %H:%M:%S")
-            else
-                # print it in two lines
-                set date_str "$(printf "%s\n%s" (date +"%d/%b/%Y") (date +"%H:%M:%S"))"
-            end
-
-            if test $terminal_width -gt 77;
-                and test $terminal_height -gt 40
-                printf "%s" $date_str | figlet -t | boxes -d scroll
-            else
-                printf "%s\n" $date_str
-            end
-
-            echo "Use calm to calm. Powered by fish the friendly interactive shell."
-            set -l filename (basename $rand_pic_file)
-            echo "Featured pic $filename (Run pic_not_nice to delete)"
-        end
-        function internal_after_pic_text -S
-        end
-        set -l before_pic_text (internal_before_pic_text)
-        set -l after_pic_text (internal_after_pic_text)
-
-        set -l before_lines (printf "%s\n" $before_pic_text | wc -l)
-        set -l after_lines (printf "%s\n" $after_pic_text | wc -l)
-
-        # echo "$terminal_height $before_lines $after_lines"
-        set -l image_height (math $terminal_height - $before_lines - $after_lines)
-        printf "%s\n" $before_pic_text
-        image_viewer -h "$image_height" -w "$terminal_width" "$rand_pic_file"
-        printf "%s" $after_pic_text
+    # use exa if available the exa tree command is much faster than lsd tree
+    if type -q exa
+        alias ls "exa --icons"
+        alias la "exa --icons -a"
+        alias tree "exa --icons --tree"
+    else if type -q lsd
+        alias ls "lsd --icon always"
+        alias la "lsd --icon always -a"
+        alias tree "lsd --icon always --tree"
+    else
+        alias ls "ls --color=auto"
+        alias la "ls --color=auto -a"
+        alias tree "tree -C"
     end
+
+    if type -q bat
+        alias cat "bat --paging=always"
+    end
+
+    if type -q yay
+        alias yay "yay --sudoloop"
+    end
+
+    source ~/.config/fish/helpers/advanced_greeting.fish
 end
