@@ -18,7 +18,6 @@ function update --description "Update the system" --argument build_kernels "Buil
         echo "Failed to update system packages."
         echo "Unknown system package manager or distribution."
     end
-    return 0
     if type -q rustup
         echo "Updating rustup..."
         rustup self update
