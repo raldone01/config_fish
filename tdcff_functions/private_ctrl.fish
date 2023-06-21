@@ -1,5 +1,5 @@
 #!/bin/fish
-function fish_private_ctrl --description "Control the fish private mode"
+function tdc_private_ctrl --description "Control the fish private mode"
     argparse t/toggle on off -- $argv
 
     function output_private_mode -S
@@ -60,7 +60,7 @@ function fish_private_ctrl --description "Control the fish private mode"
     return 0
 end
 
-if test ! "$_" = source
+if not string match -q -- "*from sourcing file*" (status)
     echo "This file must be sourced, not executed"
     return 1
 end

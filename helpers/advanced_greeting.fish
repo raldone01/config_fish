@@ -72,9 +72,10 @@ function fish_greeting
 
     set -l before_lines (printf "%s\n" $before_pic_text | wc -l)
     set -l after_lines (printf "%s\n" $after_pic_text | wc -l)
+    set -l prompt_lines (printf "%s\n" $fish_prompt | wc -l)
 
-    # echo "$terminal_height $before_lines $after_lines"
-    set -l image_height (math $terminal_height - $before_lines - $after_lines)
+    # echo "$terminal_height $before_lines $after_lines $prompt_lines"
+    set -l image_height (math $terminal_height - $before_lines - $after_lines - $prompt_lines)
     printf "%s\n" $before_pic_text
     if test -n "$rand_pic_file"
         image_viewer -h "$image_height" -w "$terminal_width" "$rand_pic_file"

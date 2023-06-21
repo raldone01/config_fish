@@ -1,5 +1,5 @@
 #!/bin/fish
-function update --description "Update the system" --argument build_kernels "Build git kernels"
+function tdc_update --description "Update the system" --argument build_kernels "Build git kernels"
     echo "Updating system packages..."
     if grep -qi "Arch Linux" /etc/os-release
         set -le pacman_options
@@ -39,6 +39,8 @@ function update --description "Update the system" --argument build_kernels "Buil
     end
 end
 
-if test ! "$_" = source
-    update $argv
+if not string match -q -- "*from sourcing file*" (status)
+    tdc_update $argv
 end
+
+alias update tdc_update

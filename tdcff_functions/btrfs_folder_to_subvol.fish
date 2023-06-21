@@ -1,7 +1,7 @@
 #!/bin/fish
-function fish_btrfs_folder_to_subvol --description "Convert a folder to a subvolume" --argument folder_path
+function tdc_btrfs_folder_to_subvol --description "Convert a folder to a subvolume" --argument folder_path
     if test -z "$folder_path"
-        printf "Usage: fish_btrfs_folder_to_subvol /path/to/folder\n"
+        printf "Usage: tdc_btrfs_folder_to_subvol /path/to/folder\n"
         return 1
     end
 
@@ -10,6 +10,11 @@ function fish_btrfs_folder_to_subvol --description "Convert a folder to a subvol
 
     set -l backup_path (string join "" "$folder_path" "_backup")
     set -l subvol_path (string join "" "$folder_path" "_volume")
+
+    if not test -d "$subvol_path"
+        printf "\"%s\" is not a directory.\n" "$folder_path"
+        return 1
+    end
 
     # Create a new subvolume
     btrfs subvolume create "$subvol_path"
@@ -59,8 +64,8 @@ function fish_btrfs_folder_to_subvol --description "Convert a folder to a subvol
     end
 end
 
-if test ! "$_" = source
-    fish_btrfs_folder_to_subvol $argv
+if not string match -q -- "*from sourcing file*" (status)
+    tdc_btrfs_folder_to_subvol $argv
 end
 
 # Test stuff

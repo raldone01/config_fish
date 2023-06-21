@@ -2,6 +2,11 @@ fish_add_path ~/.cargo/bin
 fish_add_path ~/.local/bin
 fish_add_path ~/.sage/local/bin
 
+for f in ~/.config/fish/tdcff_functions/*.fish
+    #echo "sourcing $f"
+    source $f
+end
+
 if grep -qi microsoft /proc/version;
     and grep -qi "Arch Linux" /etc/os-release
     # bass source /etc/profile.d/debuginfod/archlinux.urls
