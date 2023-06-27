@@ -39,6 +39,8 @@ function tdc_btrfs_folder_to_subvol --description "Convert a folder to a subvolu
     # /var/log
     # /var/cache/binpkgs
     # /var/db/repos
+    # ~/Games
+    # ~/.steam/root/steamapps
 
     function read_confirm --argument prompt
         while true
