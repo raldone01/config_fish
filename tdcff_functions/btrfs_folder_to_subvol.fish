@@ -11,7 +11,7 @@ function tdc_btrfs_folder_to_subvol --description "Convert a folder to a subvolu
     set -l backup_path (string join "" "$folder_path" "_backup")
     set -l subvol_path (string join "" "$folder_path" "_volume")
 
-    if not test -d "$subvol_path"
+    if not test -d "$folder_path"
         printf "\"%s\" is not a directory.\n" "$folder_path"
         return 1
     end
