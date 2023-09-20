@@ -58,11 +58,11 @@ if status --is-interactive
         alias vi vim
     end
 
-    # use exa if available the exa tree command is much faster than lsd tree
-    if type -q exa
-        alias ls "exa --icons"
-        alias la "exa --icons -a"
-        alias tree "exa --icons --tree"
+    # use eza if available the eza tree command is much faster than lsd tree
+    if type -q eza
+        alias ls "eza --icons"
+        alias la "eza --icons -a"
+        alias tree "eza --icons --tree"
     else if type -q lsd
         alias ls "lsd --icon always"
         alias la "lsd --icon always -a"

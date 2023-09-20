@@ -20,9 +20,9 @@ Font: Jetbrains Nerd Font Mono
   * Updates programs installed with `cargo install`.
   * Updates fisher.
 * `codeup` - Updates VsCode/VsCodeInsiders on Arch.
-* `ls` - Aliased to `exa`.
-* `la` - Aliased to `exa -a`.
-* `tree` - Aliased to `exa --tree`.
+* `ls` - Aliased to `eza`.
+* `la` - Aliased to `eza -a`.
+* `tree` - Aliased to `eza --tree`.
 * `fish_prompt` - Changed to [tide](https://github.com/IlanCosman/tide).
 ## Prefixed Commands
 * `tdc_btrfs_folder_to_subvol` - Converts a folder to a btrfs subvolume.
