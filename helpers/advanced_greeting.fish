@@ -24,6 +24,10 @@ function rand_pic_file
 end
 
 function calm
+    if not type -q $image_viewer
+        echo "No image viewer found!"
+        return
+    end
     set -l rand_pic_file (rand_pic_file)
     if test -z "$rand_pic_file"
         echo "No pictures found!"
@@ -61,6 +65,7 @@ function fish_greeting
 
         echo "Use calm to calm. Powered by fish the friendly interactive shell."
         if test -n "$rand_pic_file"
+           and type -q $image_viewer
             set -l filename (basename $rand_pic_file)
             echo "Featured pic $filename (Run pic_not_nice to delete)"
         end
@@ -78,6 +83,7 @@ function fish_greeting
     set -l image_height (math $terminal_height - $before_lines - $after_lines - $prompt_lines)
     printf "%s\n" $before_pic_text
     if test -n "$rand_pic_file"
+       and type -q $image_viewer
         image_viewer -h "$image_height" -w "$terminal_width" "$rand_pic_file"
     end
     printf "%s" $after_pic_text
