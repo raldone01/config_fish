@@ -2,6 +2,11 @@ fish_add_path ~/.cargo/bin
 fish_add_path ~/.local/bin
 fish_add_path ~/.sage/local/bin
 
+# early load tide_config
+if test -f ~/.config/fish/tide_config.fish
+    source ~/.config/fish/tide_config.fish
+end
+
 for f in ~/.config/fish/tdcff_functions/*.fish
     #echo "sourcing $f"
     source $f
@@ -58,11 +63,11 @@ if status --is-interactive
         alias vi vim
     end
 
-    # use exa if available the exa tree command is much faster than lsd tree
-    if type -q exa
-        alias ls "exa --icons"
-        alias la "exa --icons -a"
-        alias tree "exa --icons --tree"
+    # use eza if available the eza tree command is much faster than lsd tree
+    if type -q eza
+        alias ls "eza --icons"
+        alias la "eza --icons -a"
+        alias tree "eza --icons --tree"
     else if type -q lsd
         alias ls "lsd --icon always"
         alias la "lsd --icon always -a"
@@ -83,3 +88,10 @@ if status --is-interactive
 
     source ~/.config/fish/helpers/advanced_greeting.fish
 end
+
+# pnpm
+set -gx PNPM_HOME "/home/main/.local/share/pnpm"
+if not string match -q -- $PNPM_HOME $PATH
+  set -gx PATH "$PNPM_HOME" $PATH
+end
+# pnpm end
