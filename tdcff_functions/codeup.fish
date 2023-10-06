@@ -7,7 +7,7 @@ function tdc_codeup --description "Update visual studio code aur packages if ins
   if type -q code-insiders
     set -a packages_to_update "visual-studio-code-insiders-bin"
   end
-  yay -Sy $packages_to_update --answerclean All --answerdiff None --noconfirm --nocleanmenu --nodiffmenu --noremovemake
+  yay -Sy $packages_to_update --answerclean All --answerdiff None --noconfirm --nocleanmenu --nodiffmenu --noremovemake --redownload
 end
 
 if not string match -q -- "*from sourcing file*" (status)
