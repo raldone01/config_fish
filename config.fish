@@ -37,8 +37,10 @@ if type -q podman
 end
 
 if status --is-interactive
-    # note add AddKeysToAgent yes to ~/.ssh/config
-    eval (keychain --eval --agents ssh,gpg --quiet --nogui -Q --timeout 45)
+    if type -q keychain
+      # note add AddKeysToAgent yes to ~/.ssh/config
+      eval (keychain --eval --agents ssh,gpg --quiet --nogui -Q --timeout 45)
+    end
 
     if test -n "$EDITOR"
         if type -q nano
