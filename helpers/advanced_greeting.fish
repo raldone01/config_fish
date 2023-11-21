@@ -43,7 +43,7 @@ function fish_greeting
     set -l terminal_height (tput lines)
     set -l terminal_width (tput cols)
 
-    function internal_before_pic_text -S
+    function __before_pic_textrivate_mode -S
         # print login message
 
         if test $terminal_width -gt 134;
@@ -70,10 +70,10 @@ function fish_greeting
             echo "Featured pic $filename (Run pic_not_nice to delete)"
         end
     end
-    function internal_after_pic_text -S
+    function __after_pic_text -S
     end
-    set -l before_pic_text (internal_before_pic_text)
-    set -l after_pic_text (internal_after_pic_text)
+    set -l before_pic_text (__before_pic_textrivate_mode)
+    set -l after_pic_text (__after_pic_text)
 
     set -l before_lines (printf "%s\n" $before_pic_text | wc -l)
     set -l after_lines (printf "%s\n" $after_pic_text | wc -l)

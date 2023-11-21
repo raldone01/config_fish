@@ -42,7 +42,7 @@ function tdc_btrfs_folder_to_subvol --description "Convert a folder to a subvolu
     # ~/Games
     # ~/.steam/root/steamapps
 
-    function read_confirm --argument prompt
+    function __read_confirm --argument prompt
         while true
             read -l -P "$prompt? [y/N]" confirm
 
@@ -56,12 +56,12 @@ function tdc_btrfs_folder_to_subvol --description "Convert a folder to a subvolu
     end
 
     # Ask user if Cow should be disabled on the new subvolume
-    if read_confirm "Disable CoW on the new subvolume"
+    if __read_confirm "Disable CoW on the new subvolume"
         chattr +C "$folder_path"
     end
 
     # Ask user if backups should be deleted
-    if read_confirm "Delete the backup"
+    if __read_confirm "Delete the backup"
         rm -rf "$backup_path"
     end
 end

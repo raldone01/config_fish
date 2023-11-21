@@ -2,7 +2,7 @@
 function tdc_private_ctrl --description "Control the fish private mode"
     argparse t/toggle on off -- $argv
 
-    function output_private_mode -S
+    function __output_private_mode -S
         if test -n "$fish_private_mode"
             echo "Private mode is on"
         else
@@ -16,7 +16,7 @@ function tdc_private_ctrl --description "Control the fish private mode"
 
     # if no option is set, just output the current state
     if test -z "$toggle" -a -z "$on" -a -z "$off"
-        output_private_mode
+        __output_private_mode
         return 0
     end
 
@@ -33,7 +33,7 @@ function tdc_private_ctrl --description "Control the fish private mode"
 
     if test "$count" -gt 1
         echo "Only one option can be set"
-        output_private_mode
+        __output_private_mode
         return 1
     end
 
@@ -56,7 +56,7 @@ function tdc_private_ctrl --description "Control the fish private mode"
         set -e fish_private_mode
     end
 
-    output_private_mode
+    __output_private_mode
     return 0
 end
 
