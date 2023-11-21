@@ -1,7 +1,5 @@
 #!/bin/fish
 
-# TODO: Enhance set to current time and match to the timestamp not just the date
-
 function tdc_file_fix_future_dates --description "Fixes file dates in a folder for files with future timestamps." --argument folder
 
     # Check for proper usage
@@ -31,19 +29,15 @@ function tdc_file_fix_future_dates --description "Fixes file dates in a folder f
             echo "Would fix: $file"
         else
             echo "Fixing: $file"
-            set -l yesterday (date -d "yesterday" +"%Y%m%d")
-            set -l time "1200"
-            set -l datetime "$yesterday$time"
-            touch -t $datetime -am "$file"
+            touch -am "$file"
         end
     end
 
-    #FIX LOCAL VAR LEAK!!!!
-
+    # Capture the fix dates function
     set -lx fix_dates_function (functions __fix_dates | string split0)
 
     # Find files with a date in the future and process them
-    find "$folder" -newermt (date +%Y-%m-%d) -exec fish -c 'eval $fix_dates_function; __fix_dates "$argv[1]"' {} \;
+    find "$folder" -newermt (date "+%Y-%m-%d %H:%M:%S") -exec fish -c 'eval $fix_dates_function; __fix_dates "$argv[1]"' {} \;
 
     if test $dry_run -eq 1
         echo "Dry run completed."
