@@ -2,6 +2,12 @@ fish_add_path ~/.cargo/bin
 fish_add_path ~/.local/bin
 fish_add_path ~/.sage/local/bin
 
+if type -q pyenv
+    set -x PYENV_ROOT $HOME/.pyenv
+    fish_add_path $PYENV_ROOT/bin
+    pyenv init - | source
+end
+
 # early load tide_config
 if test -f ~/.config/fish/tide_config.fish
     source ~/.config/fish/tide_config.fish
