@@ -46,12 +46,12 @@ function tdc_btrfs_folder_to_subvol --description "Convert a folder to a subvolu
   set -l reflink_option "--reflink=auto"
   # Ask user if Cow should be disabled on the new subvolume
   if __read_confirm "Disable CoW on the new subvolume"
-    chattr +C "$subvol_path"
-    set -l reflink_option "--reflink=never"
+    chattr -R +C "$subvol_path"
+    set reflink_option "--reflink=never"
   end
 
   # Copy the contents of the original folder to the new subvolume using reflink
-  cp $reflink_option -p -R "$folder_path"/{.,}* "$subvol_path/"
+  cp -a $reflink_option "$folder_path"/{.,}* "$subvol_path/"
 
   # Move the original folder to the backup location
   mv "$folder_path" "$backup_path"
