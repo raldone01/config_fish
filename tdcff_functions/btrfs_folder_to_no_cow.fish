@@ -18,6 +18,18 @@ function tdc_btrfs_folder_to_no_cow --description "Convert a folder to a no data
     return 1
   end
 
+  # Check if the folder is a file
+  if test -f "$folder_path"
+    mv "$folder_path" "$folder_path"_backup
+    touch "$folder_path"
+    chattr +C "$folder_path"
+    cp -p --reflink=never "$folder_path"_backup "$folder_path"
+    # Ask user if backups should be deleted
+    if __read_confirm "Delete the backup"
+      rm -rf "$folder_path"_backup
+    end
+  end
+
   # remove trailing slashes
   set -l folder_path (string trim -r -c "/" $folder_path)
 
