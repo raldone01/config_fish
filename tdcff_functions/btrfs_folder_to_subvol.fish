@@ -1,5 +1,18 @@
 #!/bin/fish
 function tdc_btrfs_folder_to_subvol --description "Convert a folder to a subvolume" --argument folder_path
+    function __read_confirm --argument prompt
+        while true
+            read -l -P "$prompt? [y/N]" confirm
+
+            switch $confirm
+                case Y y
+                    return 0
+                case '' N n
+                    return 1
+            end
+        end
+    end
+
     if test -z "$folder_path"
         printf "Usage: tdc_btrfs_folder_to_subvol /path/to/folder\n"
         return 1
@@ -22,8 +35,23 @@ function tdc_btrfs_folder_to_subvol --description "Convert a folder to a subvolu
     # Copy the attributes of the original folder to the new subvolume
     rsync -ptgo -A -X -d --no-recursive "$folder_path/" "$subvol_path"
 
+    # Common directories to exclude from CoW and snapshots
+    # /var/cache/
+    # /var/log
+    # /var/cache/binpkgs
+    # /var/db/repos
+    # ~/Games
+    # ~/.steam/root/steamapps
+
+    set -l reflink_option "--reflink=auto"
+    # Ask user if Cow should be disabled on the new subvolume
+    if __read_confirm "Disable CoW on the new subvolume"
+        chattr +C "$subvol_path"
+        set -l reflink_option "--reflink=never"
+    end
+
     # Copy the contents of the original folder to the new subvolume using reflink
-    cp --reflink=auto -p -R "$folder_path"/{.,}* "$subvol_path/"
+    cp $reflink_option -p -R "$folder_path"/{.,}* "$subvol_path/"
 
     # Move the original folder to the backup location
     mv "$folder_path" "$backup_path"
@@ -33,32 +61,6 @@ function tdc_btrfs_folder_to_subvol --description "Convert a folder to a subvolu
 
     echo "The folder has been converted to a subvolume."
     echo "A backup of the original folder is available at $backup_path"
-
-    # Common directories to exclude from CoW and snapshots
-    # /var/cache/
-    # /var/log
-    # /var/cache/binpkgs
-    # /var/db/repos
-    # ~/Games
-    # ~/.steam/root/steamapps
-
-    function __read_confirm --argument prompt
-        while true
-            read -l -P "$prompt? [y/N]" confirm
-
-            switch $confirm
-                case Y y
-                    return 0
-                case '' N n
-                    return 1
-            end
-        end
-    end
-
-    # Ask user if Cow should be disabled on the new subvolume
-    if __read_confirm "Disable CoW on the new subvolume"
-        chattr +C "$folder_path"
-    end
 
     # Ask user if backups should be deleted
     if __read_confirm "Delete the backup"
@@ -72,7 +74,7 @@ end
 
 # Test stuff
 # sudo rm -rf test_folder*
-# source /home/main/.config/fish/functions/btrfs_folder_to_subvol.fish
+# source /home/main/.config/fish/tdcff_functions/btrfs_folder_to_subvol.fish
 # mkdir test_folder
 # touch test_folder/test_file
 # touch test_folder/.test_hidden_file
