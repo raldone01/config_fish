@@ -18,5 +18,5 @@ function tdc_setup_deps --description "Installs/Reinstalls the dependencies of t
 end
 
 if not string match -q -- "*from sourcing file*" (status)
-    tdc_setup_deps $argv
+  tdc_setup_deps $argv
 end

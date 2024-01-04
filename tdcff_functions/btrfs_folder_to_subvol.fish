@@ -1,75 +1,75 @@
 #!/bin/fish
 function tdc_btrfs_folder_to_subvol --description "Convert a folder to a subvolume" --argument folder_path
-    function __read_confirm --argument prompt
-        while true
-            read -l -P "$prompt? [y/N]" confirm
+  function __read_confirm --argument prompt
+    while true
+      read -l -P "$prompt? [y/N]" confirm
 
-            switch $confirm
-                case Y y
-                    return 0
-                case '' N n
-                    return 1
-            end
-        end
-    end
-
-    if test -z "$folder_path"
-        printf "Usage: tdc_btrfs_folder_to_subvol /path/to/folder\n"
+      switch $confirm
+      case Y y
+        return 0
+      case '' N n
         return 1
+      end
     end
+  end
 
-    # remove trailing slashes
-    set -l folder_path (string trim -r -c "/" $folder_path)
+  if test -z "$folder_path"
+    printf "Usage: tdc_btrfs_folder_to_subvol /path/to/folder\n"
+    return 1
+  end
 
-    set -l backup_path (string join "" "$folder_path" "_backup")
-    set -l subvol_path (string join "" "$folder_path" "_volume")
+  # remove trailing slashes
+  set -l folder_path (string trim -r -c "/" $folder_path)
 
-    if not test -d "$folder_path"
-        printf "\"%s\" is not a directory.\n" "$folder_path"
-        return 1
-    end
+  set -l backup_path (string join "" "$folder_path" "_backup")
+  set -l subvol_path (string join "" "$folder_path" "_volume")
 
-    # Create a new subvolume
-    btrfs subvolume create "$subvol_path"
+  if not test -d "$folder_path"
+    printf "\"%s\" is not a directory.\n" "$folder_path"
+    return 1
+  end
 
-    # Copy the attributes of the original folder to the new subvolume
-    rsync -ptgo -A -X -d --no-recursive "$folder_path/" "$subvol_path"
+  # Create a new subvolume
+  btrfs subvolume create "$subvol_path"
 
-    # Common directories to exclude from CoW and snapshots
-    # /var/cache/
-    # /var/log
-    # /var/cache/binpkgs
-    # /var/db/repos
-    # ~/Games
-    # ~/.steam/root/steamapps
+  # Copy the attributes of the original folder to the new subvolume
+  rsync -ptgo -A -X -d --no-recursive "$folder_path/" "$subvol_path"
 
-    set -l reflink_option "--reflink=auto"
-    # Ask user if Cow should be disabled on the new subvolume
-    if __read_confirm "Disable CoW on the new subvolume"
-        chattr +C "$subvol_path"
-        set -l reflink_option "--reflink=never"
-    end
+  # Common directories to exclude from CoW and snapshots
+  # /var/cache/
+  # /var/log
+  # /var/cache/binpkgs
+  # /var/db/repos
+  # ~/Games
+  # ~/.steam/root/steamapps
 
-    # Copy the contents of the original folder to the new subvolume using reflink
-    cp $reflink_option -p -R "$folder_path"/{.,}* "$subvol_path/"
+  set -l reflink_option "--reflink=auto"
+  # Ask user if Cow should be disabled on the new subvolume
+  if __read_confirm "Disable CoW on the new subvolume"
+    chattr +C "$subvol_path"
+    set -l reflink_option "--reflink=never"
+  end
 
-    # Move the original folder to the backup location
-    mv "$folder_path" "$backup_path"
+  # Copy the contents of the original folder to the new subvolume using reflink
+  cp $reflink_option -p -R "$folder_path"/{.,}* "$subvol_path/"
 
-    # Move the subvolume to the original folder location
-    mv "$subvol_path/" "$folder_path"
+  # Move the original folder to the backup location
+  mv "$folder_path" "$backup_path"
 
-    echo "The folder has been converted to a subvolume."
-    echo "A backup of the original folder is available at $backup_path"
+  # Move the subvolume to the original folder location
+  mv "$subvol_path/" "$folder_path"
 
-    # Ask user if backups should be deleted
-    if __read_confirm "Delete the backup"
-        rm -rf "$backup_path"
-    end
+  echo "The folder has been converted to a subvolume."
+  echo "A backup of the original folder is available at $backup_path"
+
+  # Ask user if backups should be deleted
+  if __read_confirm "Delete the backup"
+    rm -rf "$backup_path"
+  end
 end
 
 if not string match -q -- "*from sourcing file*" (status)
-    tdc_btrfs_folder_to_subvol $argv
+  tdc_btrfs_folder_to_subvol $argv
 end
 
 # Test stuff
