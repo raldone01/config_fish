@@ -43,6 +43,7 @@ function tdc_btrfs_folder_to_subvol --description "Convert a folder to a subvolu
   # ~/Games
   # ~/.steam/root/steamapps
   # ~/.local/share/Steam/steamapps/
+  # ~/.local/share/baloo/
 
   set -l reflink_option "--reflink=auto"
   # Ask user if Cow should be disabled on the new subvolume
