@@ -55,6 +55,7 @@ function tdc_btrfs_folder_to_no_cow --description "Convert a folder to a no data
   # /var/db/repos
   # ~/Games
   # ~/.steam/root/steamapps
+  # ~/.local/share/Steam/steamapps/
 
   # Exclude the new folder from CoW
   chattr -R +C "$new_folder_path"
