@@ -1,5 +1,6 @@
 #!/bin/fish
 function tdc_update --description "Update the system" --argument build_kernels "Build git kernels"
+  set -l fish_binary (command -v fish)
   echo "Updating system packages"
   if type -q pacman
     set -le pacman_options
@@ -15,10 +16,10 @@ function tdc_update --description "Update the system" --argument build_kernels "
     end
   else if type -q apt-get
     echo "Running apt-get update && apt-get upgrade"
-    sudo fish -c "apt-get update && apt-get upgrade"
+    sudo $fish_binary -c "apt-get update && apt-get upgrade"
   else if type -q dnf
     echo "Running dnf upgrade"
-    sudo fish -c "dnf upgrade"
+    sudo $fish_binary -c "dnf upgrade"
   else
     echo "Failed to update system packages."
     echo "Unknown system package manager or distribution."
