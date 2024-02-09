@@ -9,7 +9,7 @@ function tdc_codeup --description "Update visual studio code aur packages if ins
   end
   if type -q yay
     echo "Running yay -Sy $packages_to_update"
-    yay -Sy $packages_to_update --answerclean All --answerdiff None --noconfirm --nocleanmenu --nodiffmenu --noremovemake --redownload
+    yay -Sy $packages_to_update --answerclean All --answerdiff None --noconfirm --cleanmenu=false --diffmenu=false --noremovemake --redownload
   else
     echo "yay not installed"
   end
