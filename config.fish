@@ -1,6 +1,18 @@
-fish_add_path ~/.cargo/bin
-fish_add_path ~/.local/bin
-fish_add_path ~/.sage/local/bin
+if test -d ~/.cargo/bin
+  fish_add_path ~/.cargo/bin
+end
+
+if test -d ~/.local/bin
+  fish_add_path ~/.local/bin
+end
+
+if test -d ~/.sage/local/bin
+  fish_add_path ~/.sage/local/bin
+end
+
+if test -d ~/.nix-profile/bin
+  fish_add_path ~/.nix-profile/bin
+end
 
 if type -q pyenv
   set -x PYENV_ROOT $HOME/.pyenv
