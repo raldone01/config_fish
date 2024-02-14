@@ -2,6 +2,14 @@ if test -d ~/.cargo/bin
   fish_add_path ~/.cargo/bin
 end
 
+if test -d ~/go
+  set -x GOPATH ~/go
+end
+
+if test -d ~/go/bin
+  fish_add_path ~/go/bin
+end
+
 if test -d ~/.local/bin
   fish_add_path ~/.local/bin
 end
