@@ -5,9 +5,10 @@ function tdc_snapper_delete_all_snapshots_for_config --description "Deletes all 
     return 1
   end
 
-  set snapshot_numbers "$(sudo snapper --no-headers --csvout --config "$config" list --columns number | tail -n +2)"
+  set snapshot_numbers (sudo snapper --no-headers --csvout --config "$config" list --columns number | string split "\n" | tail -n +2)
 
   for i in $snapshot_numbers;
+    echo "Deleting snapshot number: $i"
     sudo snapper -c "$config" delete $i;
   end
 end
