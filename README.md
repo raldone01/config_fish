@@ -25,8 +25,7 @@ Font: `Jetbrains Nerd Font Mono`
 * `tree` - Aliased to `eza --tree`.
 * `fish_prompt` - Changed to [tide](https://github.com/IlanCosman/tide).
 ## Prefixed Commands
-* `tdc_btrfs_folder_to_no_cow` - Converts a folder or file to a btrfs no cow file.
-* `tdc_btrfs_folder_to_subvol` - Converts a folder to a btrfs subvolume. Optionally, it can also make the subvolume no cow.
+* `tdc_btrfs_convert` - Converts a file/folder to a btrfs subvolume/file with or without CoW.
 * `tdc_file_fix_future_dates` - Fixes future dates in files and sets them to the current date.
 * `tdc_hello_world` - Prints "Hello, World!".
 * `tdc_monitor_memory_usage` - Monitors memory usage of a process given its pid.
@@ -54,12 +53,12 @@ Font: `Jetbrains Nerd Font Mono`
 
 # The following are common folders you may want to convert to subvolumes on your linux system.
 # This may be especially useful if you are using snapper for snapshots.
-tdc_btrfs_convert --to_type=subvolume --nocow=true /var/cache/
-tdc_btrfs_convert --to_type=subvolume --nocow=true /var/log/ # You may not want to rollback logs
-tdc_btrfs_convert --to_type=subvolume --nocow=true /var/cache/binpkgs
-tdc_btrfs_convert --to_type=subvolume --nocow=true /var/db/repos
-tdc_btrfs_convert --to_type=subvolume --nocow=true ~/Games
-tdc_btrfs_convert --to_type=subvolume --nocow=true ~/.steam/root/steamapps
-tdc_btrfs_convert --to_type=subvolume --nocow=true ~/.local/share/Steam/steamapps/
-tdc_btrfs_convert --to_type=subvolume --nocow=true ~/.local/share/baloo/
+tdc_btrfs_convert --subvol=true --nocow=true /var/cache/
+tdc_btrfs_convert --subvol=true --nocow=true /var/log/ # You may not want to rollback logs
+tdc_btrfs_convert --subvol=true --nocow=true /var/cache/binpkgs
+tdc_btrfs_convert --subvol=true --nocow=true /var/db/repos
+tdc_btrfs_convert --subvol=true --nocow=true ~/Games
+tdc_btrfs_convert --subvol=true --nocow=true ~/.steam/root/steamapps
+tdc_btrfs_convert --subvol=true --nocow=true ~/.local/share/Steam/steamapps/
+tdc_btrfs_convert --subvol=true --nocow=true ~/.local/share/baloo/
 ```
