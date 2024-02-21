@@ -1,5 +1,13 @@
 #!/bin/fish
 function tdc_btrfs_convert --description "Converts a file/folder to a no data CoW file/folder/subvolume"
+  set -lx logging 1
+
+  function __log --argument message
+    if test $logging -eq 1
+      echo $message
+    end
+  end
+
   function __read_confirm --argument prompt
     while true
       read -l -P "$prompt? [y/N]" confirm
@@ -24,11 +32,14 @@ function tdc_btrfs_convert --description "Converts a file/folder to a no data Co
   function __normalize_boolean --argument value
     switch $value
     case true True Yes yes
+      echo 1
       return 0
     case false False No no
-      return 1
+      echo 0
+      return 0
     end
-    return $value
+    echo "Invalid boolean value: $value"
+    return 1
   end
 
   function __print_usage
@@ -37,64 +48,76 @@ function tdc_btrfs_convert --description "Converts a file/folder to a no data Co
     printf "\n"
     printf "Options:\n"
     printf "  --nocow         Disable CoW on the output file\n"
+    printf "  --subvol        Convert the folder to a subvolume\n"
     printf "  --delete-backup Delete the backup\n"
     printf "  -h, --help      Display this help and exit\n"
   end
 
-  # to_type can be file, folder or subvolume
-  argparse "to_type=" "input_path=" "nocow=!__validate_boolean" "delete-backup" -- $argv
+  argparse "subvol=!__validate_boolean" "input_path=" "nocow=!__validate_boolean" "delete-backup" -- $argv
   # error print usage
-  if test $status -ne 0
+  if test $test $status -ne 0
     __print_usage
     return 1
   end
 
-  set -l input_path = $_flag_input_path
-  set -l to_type = $_flag_to_type
-  set -l nocow = $_flag_nocow
-  set -l delete_backup = $_flag_delete_backup
+  set -lx input_path $_flag_input_path
+  set -lx subvol $_flag_subvol
+  set -l nocow $_flag_nocow
+  set -lx delete_backup $_flag_delete_backup
+
+  __log "Remaining arguments: $argv"
 
   if test -z "$input_path"
-    set -l input_path $argv[1]
+    set input_path $argv[1]
     set -e $argv[1]
   end
 
-  if test -z "$input_path" or test -e "$input_path"
+  __log "input_path: $input_path subvol: $subvol nocow: $nocow delete_backup: $delete_backup"
+
+  if test -z "$input_path";
+     or not test -e "$input_path"
     printf "The input path is not valid.\n"
     __print_usage
     return 1
   end
 
-  set -l unix_time (date +%s)
+  set -lx unix_time (date +%s)
 
   # remove trailing slashes
-  set -l input_path (string trim -r -c "/" $input_path)
+  set -lx input_path (string trim -r -c "/" $input_path)
 
-  set -l backup_path (string join "" "$folder_path" "_backup")
-  set -l temp_path (string join "" "$folder_path" "_temp" "$unix_time")
+  set -lx backup_path (string join "" "$input_path" "_backup")
+  set -lx temp_path (string join "" "$input_path" "_temp" "$unix_time")
 
   # handle nocow flag
+  __log "nocow: $nocow"
   if test -z "$nocow"
-    set -l nocow false
-    if __read_confirm "Disable CoW on the new subvolume"
-      set -l nocow true
+    set nocow false
+    if __read_confirm "Disable CoW"
+      set nocow true
     end
   end
   set -l nocow (__normalize_boolean $nocow)
+  if test $status -ne 0
+    return 1
+  end
 
   set -l reflink_option "--reflink=auto"
-  if $nocow
+  if test $nocow -eq 1
     set reflink_option "--reflink=never"
   end
 
   # handle nobackup flag
   function __handle_delete_backup
     set -l delete_backup (__normalize_boolean $delete_backup)
-    if $delete_backup
+    if test $status -ne 0
+      return 1
+    end
+    if test -z $delete_backup
       if __read_confirm "Delete the backup"
-        set -l delete_backup true
+        set delete_backup true
       else
-        set -l delete_backup false
+        set delete_backup false
       end
     end
     if $delete_backup
@@ -104,12 +127,13 @@ function tdc_btrfs_convert --description "Converts a file/folder to a no data Co
 
   # Check if the input_path is a file
   if test -f "$input_path"
-    mv "$input_path" "$input_path"_backup
+    __log "The input path is a file"
+    mv "$input_path" "$backup_path"
     touch "$input_path"
-    if $nocow
+    if test $nocow -eq 1
       chattr +C "$input_path"
     end
-    cp -p $reflink_option "$input_path"_backup "$input_path"
+    cp -p $reflink_option "$backup_path" "$input_path"
     __handle_delete_backup
     return 0
   end
@@ -120,8 +144,23 @@ function tdc_btrfs_convert --description "Converts a file/folder to a no data Co
     return 1
   end
 
+  __log "The input path is a folder"
+
+  # handle subvol flag
+  __log "subvol: $subvol"
+  if test -z "$subvol"
+    set subvol false
+    if __read_confirm "Convert the folder to a subvolume"
+      set subvol true
+    end
+  end
+  set -l subvol (__normalize_boolean $subvol)
+  if test $status -ne 0
+    return 1
+  end
+
   # Create a temporary folder/subvolume
-  if test $to_type = "subvolume"
+  if test $subvol -eq 1
     btrfs subvolume create "$temp_path"
   else
     mkdir -p "$temp_path"
@@ -131,18 +170,18 @@ function tdc_btrfs_convert --description "Converts a file/folder to a no data Co
   rsync -ptgo -A -X -d --no-recursive "$input_path/" "$temp_path"
 
   # Exclude the new folder from CoW
-  if $nocow
+  if test $nocow -eq 1
     chattr -R +C "$temp_path"
   end
 
   # Copy the contents of the original folder to the new folder
-  cp -a $reflink_option "$folder_path"/{.,}* "$temp_path/"
+  cp -a $reflink_option "$input_path"/{.,}* "$temp_path/"
 
   # Move the original folder to the backup location
-  mv "$folder_path" "$backup_path"
+  mv "$input_path" "$backup_path"
 
   # Move the new folder to the original folder location
-  mv "$temp_path/" "$folder_path"
+  mv "$temp_path/" "$input_path"
 
   echo "The folder has been converted."
   echo "A backup of the original folder is available at $backup_path"
@@ -170,3 +209,8 @@ end
 # tree -a test_folder
 # lsattr test_folder -a
 # tree -a test_folder_backup
+#
+# sudo rm test_file
+# echo "TestFile" > test_file
+# tdc_btrfs_convert test_file
+# lsattr -a test_file

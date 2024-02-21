@@ -3,3 +3,4 @@
 /fishd.tmp.*
 /fish_plugins
 functions/
+test/
