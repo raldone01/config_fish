@@ -35,16 +35,6 @@ function tdc_btrfs_folder_to_subvol --description "Convert a folder to a subvolu
   # Copy the attributes of the original folder to the new subvolume
   rsync -ptgo -A -X -d --no-recursive "$folder_path/" "$subvol_path"
 
-  # Common directories to exclude from CoW and snapshots
-  # /var/cache/
-  # /var/log
-  # /var/cache/binpkgs
-  # /var/db/repos
-  # ~/Games
-  # ~/.steam/root/steamapps
-  # ~/.local/share/Steam/steamapps/
-  # ~/.local/share/baloo/
-
   set -l reflink_option "--reflink=auto"
   # Ask user if Cow should be disabled on the new subvolume
   if __read_confirm "Disable CoW on the new subvolume"

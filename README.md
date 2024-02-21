@@ -6,7 +6,7 @@
 
 Image: https://www.pexels.com/photo/close-up-portrait-of-lion-247502/
 
-Font: Jetbrains Nerd Font Mono
+Font: `Jetbrains Nerd Font Mono`
 
 ## Tweaked Commands
 * `fish_greeting` - See image above.
@@ -14,7 +14,7 @@ Font: Jetbrains Nerd Font Mono
   Skipped if no folders are configured or no images are found.
 * `pic_not_nice` - Deletes the last image displayed by `fish_greeting` or `calm`.
 * `yay` - Includes the `--sudoloop` option by default.
-* `update` - Custom arch update script.
+* `update` - Custom update script. Primarily focused on arch but some other distros are also partially supported.
   * Updates the system with `yay`.
   * Updates rust with `rustup`.
   * Updates programs installed with `cargo install`.
@@ -25,9 +25,13 @@ Font: Jetbrains Nerd Font Mono
 * `tree` - Aliased to `eza --tree`.
 * `fish_prompt` - Changed to [tide](https://github.com/IlanCosman/tide).
 ## Prefixed Commands
-* `tdc_btrfs_folder_to_subvol` - Converts a folder to a btrfs subvolume.
+* `tdc_btrfs_folder_to_no_cow` - Converts a folder or file to a btrfs no cow file.
+* `tdc_btrfs_folder_to_subvol` - Converts a folder to a btrfs subvolume. Optionally, it can also make the subvolume no cow.
+* `tdc_file_fix_future_dates` - Fixes future dates in files and sets them to the current date.
+* `tdc_hello_world` - Prints "Hello, World!".
 * `tdc_monitor_memory_usage` - Monitors memory usage of a process given its pid.
 * `tdc_setup_deps` - Installs/Reinstalls dependencies for tdcff.
+* `tdc_snapper_delete_all_snapshots_for_config` - Deletes all snapshots for a given snapper config.
 
 ## Setup
 
@@ -40,3 +44,22 @@ Font: Jetbrains Nerd Font Mono
 * `$EDITOR machine-config.fish`
 * `fish`
 * `update`
+
+## Notes on BTRFS optimizations
+
+```fish
+# The following are common folders you may want to convert to no CoW folders on your linux system.
+# In general database folders/files should be converted to no CoW files.
+# However checksums are also disabled so be careful.
+
+# The following are common folders you may want to convert to subvolumes on your linux system.
+# This may be especially useful if you are using snapper for snapshots.
+tdc_btrfs_convert --to_type=subvolume --nocow=true /var/cache/
+tdc_btrfs_convert --to_type=subvolume --nocow=true /var/log/ # You may not want to rollback logs
+tdc_btrfs_convert --to_type=subvolume --nocow=true /var/cache/binpkgs
+tdc_btrfs_convert --to_type=subvolume --nocow=true /var/db/repos
+tdc_btrfs_convert --to_type=subvolume --nocow=true ~/Games
+tdc_btrfs_convert --to_type=subvolume --nocow=true ~/.steam/root/steamapps
+tdc_btrfs_convert --to_type=subvolume --nocow=true ~/.local/share/Steam/steamapps/
+tdc_btrfs_convert --to_type=subvolume --nocow=true ~/.local/share/baloo/
+```
