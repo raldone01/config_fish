@@ -1,10 +1,10 @@
 #!/bin/fish
 function tdc_btrfs_convert --description "Converts a file/folder to a no data CoW file/folder/subvolume"
-  set -lx logging 1
+  set -lx logging 0
 
   function __log --argument message
     if test $logging -eq 1
-      echo $message
+      echo "$message"
     end
   end
 
@@ -55,26 +55,26 @@ function tdc_btrfs_convert --description "Converts a file/folder to a no data Co
 
   argparse "subvol=!__validate_boolean" "input_path=" "nocow=!__validate_boolean" "delete-backup" -- $argv
   # error print usage
-  if test $test $status -ne 0
+  if test $status -ne 0
     __print_usage
     return 1
   end
 
-  set -lx input_path $_flag_input_path
-  set -lx subvol $_flag_subvol
-  set -l nocow $_flag_nocow
-  set -lx delete_backup $_flag_delete_backup
+  set -lx input_path "$_flag_input_path"
+  set -lx subvol "$_flag_subvol"
+  set -l nocow "$_flag_nocow"
+  set -lx delete_backup "$_flag_delete_backup"
 
   __log "Remaining arguments: $argv"
 
   if test -z "$input_path"
     set input_path $argv[1]
-    set -e $argv[1]
+    set -e argv[1]
   end
 
   __log "input_path: $input_path subvol: $subvol nocow: $nocow delete_backup: $delete_backup"
 
-  if test -z "$input_path";
+  if test -z "$input_path"
      or not test -e "$input_path"
     printf "The input path is not valid.\n"
     __print_usage
@@ -84,7 +84,7 @@ function tdc_btrfs_convert --description "Converts a file/folder to a no data Co
   set -lx unix_time (date +%s)
 
   # remove trailing slashes
-  set -lx input_path (string trim -r -c "/" $input_path)
+  set -lx input_path (string trim -r -c "/" "$input_path")
 
   set -lx backup_path (string join "" "$input_path" "_backup")
   set -lx temp_path (string join "" "$input_path" "_temp" "$unix_time")
@@ -97,7 +97,7 @@ function tdc_btrfs_convert --description "Converts a file/folder to a no data Co
       set nocow true
     end
   end
-  set -l nocow (__normalize_boolean $nocow)
+  set -l nocow (__normalize_boolean "$nocow")
   if test $status -ne 0
     return 1
   end
@@ -109,18 +109,18 @@ function tdc_btrfs_convert --description "Converts a file/folder to a no data Co
 
   # handle nobackup flag
   function __handle_delete_backup
-    set -l delete_backup (__normalize_boolean $delete_backup)
+    set -l delete_backup (__normalize_boolean "$delete_backup")
     if test $status -ne 0
       return 1
     end
-    if test -z $delete_backup
+    if test -z "$delete_backup"
       if __read_confirm "Delete the backup"
         set delete_backup true
       else
         set delete_backup false
       end
     end
-    if $delete_backup
+    if test "$delete_backup" -eq 1
       rm -rf "$backup_path"
     end
   end
@@ -154,7 +154,7 @@ function tdc_btrfs_convert --description "Converts a file/folder to a no data Co
       set subvol true
     end
   end
-  set -l subvol (__normalize_boolean $subvol)
+  set -l subvol (__normalize_boolean "$subvol")
   if test $status -ne 0
     return 1
   end
