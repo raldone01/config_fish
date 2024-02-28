@@ -109,17 +109,17 @@ function tdc_btrfs_convert --description "Converts a file/folder to a no data Co
 
   # handle nobackup flag
   function __handle_delete_backup
+    if test -z "$delete_backup"
+      set delete_backup false
+      if __read_confirm "Delete the backup"
+        set delete_backup true
+      end
+    end
     set -l delete_backup (__normalize_boolean "$delete_backup")
     if test $status -ne 0
       return 1
     end
-    if test -z "$delete_backup"
-      if __read_confirm "Delete the backup"
-        set delete_backup true
-      else
-        set delete_backup false
-      end
-    end
+
     if test "$delete_backup" -eq 1
       rm -rf "$backup_path"
     end
