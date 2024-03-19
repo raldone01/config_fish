@@ -107,11 +107,15 @@ if status --is-interactive
   end
 
   if type -q bat
-    alias cat "bat --paging=always"
+    alias cat "bat --paging=never --plain"
   end
 
   if type -q yay
     alias yay "yay --sudoloop"
+  end
+
+  if type -q zoxide
+    zoxide init fish | source
   end
 
   source ~/.config/fish/helpers/advanced_greeting.fish
