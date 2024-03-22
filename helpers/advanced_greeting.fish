@@ -6,7 +6,12 @@ end
 # If no image is found or there was an error it returns nothing.
 # If an image path is returned the function pic_not_nice is defined.
 function rand_pic_file
-  set -g last_pic_file (find $pic_folders -type f \( -iname \*.jpg -o -iname \*.jpeg -o -iname \*.png \)  2> /dev/null | shuf -n 1)
+  if test -z "$pic_folders"
+    set -g last_pic_file ""
+  else
+    set -g last_pic_file (find $pic_folders -type f \( -iname \*.jpg -o -iname \*.jpeg -o -iname \*.png \)  2> /dev/null | shuf -n 1)
+  end
+
   if test -r "$last_pic_file"
     # check if the file is readable
 

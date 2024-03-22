@@ -46,7 +46,7 @@ if grep -qi microsoft /proc/version;
   set -x DEBUGINFOD_URLS "https://debuginfod.archlinux.org"
 end
 
-# check if the file exists
+# check if a machine specific config exists
 if test -f ~/.config/fish/machine-config.fish
   source ~/.config/fish/machine-config.fish
 end
