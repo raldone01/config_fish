@@ -12,9 +12,9 @@ function tdc_setup_deps --description "Installs/Reinstalls the dependencies of t
     echo "cargo not installed"
     return 1
   end
-  yay -Sy fish rustup keychain figlet boxes kubectl rsync zoxide
+  yay -Sy fish rustup keychain figlet boxes kubectl rsync zoxide eza
   rustup install stable
-  cargo install viu exa
+  cargo install viu
 end
 
 if not string match -q -- "*from sourcing file*" (status)
