@@ -22,6 +22,9 @@ function tdc_btrfs_convert --description "Converts a file/folder to a no data Co
   end
 
   function __validate_boolean --argument value
+    if test -z "$value"
+      set value $_flag_value
+    end
     switch $value
     case true True Yes yes false False No no
       return 0
@@ -54,18 +57,22 @@ function tdc_btrfs_convert --description "Converts a file/folder to a no data Co
   end
 
   argparse "subvol=!__validate_boolean" "input_path=" "nocow=!__validate_boolean" "delete-backup" -- $argv
-  # error print usage
-  if test $status -ne 0
-    __print_usage
-    return 1
-  end
+  set -l argparse_status $status
 
   set -lx input_path "$_flag_input_path"
   set -lx subvol "$_flag_subvol"
   set -l nocow "$_flag_nocow"
   set -lx delete_backup "$_flag_delete_backup"
 
+  __log "Parsed arguments: input_path: $input_path subvol: $subvol nocow: $nocow delete_backup: $delete_backup"
   __log "Remaining arguments: $argv"
+  __log "argparse_status: $argparse_status"
+
+  # error print usage
+  if test $argparse_status -ne 0
+    __print_usage
+    return 1
+  end
 
   if test -z "$input_path"
     set input_path $argv[1]
