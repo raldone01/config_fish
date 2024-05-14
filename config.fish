@@ -141,6 +141,16 @@ if status --is-interactive
     zoxide init fish | source
   end
 
+  if type -q sudoedit
+    # https://github.com/microsoft/vscode-remote-release/issues/1688#issuecomment-1708577380
+    if type -q code
+      alias sudocode 'SUDO_EDITOR="$(which code) --wait" sudoedit'
+    end
+    if type -q code-insiders
+      alias sudocode-insiders 'SUDO_EDITOR="$(which code-insiders) --wait" sudoedit'
+    end
+  end
+
   source ~/.config/fish/helpers/advanced_greeting.fish
 end
 
