@@ -28,6 +28,10 @@ if type -q pyenv
   pyenv init - | source
 end
 
+if type -q flatpak
+  set -x XDG_DATA_DIRS $XDG_DATA_DIRS:~/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share
+end
+
 # early load tide_config
 if test -f ~/.config/fish/tide_config.fish
   source ~/.config/fish/tide_config.fish
