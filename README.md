@@ -53,12 +53,13 @@ Font: `Jetbrains Nerd Font Mono`
 
 # The following are common folders you may want to convert to subvolumes on your linux system.
 # This may be especially useful if you are using snapper for snapshots.
-tdc_btrfs_convert --subvol=true --nocow=true /var/cache/
-tdc_btrfs_convert --subvol=true --nocow=true /var/log/ # You may not want to rollback logs
-tdc_btrfs_convert --subvol=true --nocow=true /var/cache/binpkgs
-tdc_btrfs_convert --subvol=true --nocow=true /var/db/repos
-tdc_btrfs_convert --subvol=true --nocow=true ~/Games
-tdc_btrfs_convert --subvol=true --nocow=true ~/.steam/root/steamapps
-tdc_btrfs_convert --subvol=true --nocow=true ~/.local/share/Steam/steamapps/
-tdc_btrfs_convert --subvol=true --nocow=true ~/.local/share/baloo/
+tdc_btrfs_convert --subvol=true --nocow=true  /var/cache/
+tdc_btrfs_convert --subvol=true --nocow=true  /var/log/ # You may not want to rollback logs
+tdc_btrfs_convert --subvol=true --nocow=true  /var/cache/binpkgs
+tdc_btrfs_convert --subvol=true --nocow=true  /var/db/repos
+tdc_btrfs_convert --subvol=true --nocow=true  ~/Games
+tdc_btrfs_convert --subvol=true --nocow=true  ~/.steam/root/steamapps
+tdc_btrfs_convert --subvol=true --nocow=true  ~/.local/share/Steam/steamapps/
+tdc_btrfs_convert --subvol=true --nocow=true  ~/.local/share/baloo/
+tdc_btrfs_convert --subvol=true --nocow=false ~/.cargo/
 ```
