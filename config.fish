@@ -28,6 +28,10 @@ if type -q pyenv
   pyenv init - | source
 end
 
+if type -q flatpak
+  set -x XDG_DATA_DIRS $XDG_DATA_DIRS:~/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share
+end
+
 # early load tide_config
 if test -f ~/.config/fish/tide_config.fish
   source ~/.config/fish/tide_config.fish
@@ -63,9 +67,32 @@ if type -q podman
 end
 
 if status --is-interactive
+  #if type -q gpg-agent
+  #  # gpg-agent.socket
+  #  # gpg-agent-extra.socket
+  #  # gpg-agent-browser.socket
+  #  # gpg-agent-ssh.socket
+  #  # dirmngr.socket
+  #  set -ex SSH_AGENT_PID
+  #
+  #  if not set -q SSH_AUTH_SOCK
+  #    set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
+  #  end
+  #else
   if type -q keychain
+    # To make keychain available in plasma:
+
+    ## nano $HOME/.config/plasma-workspace/env/keychain.sh
+    #!/bin/bash
+    #keychain --agents ssh,gpg --quiet --nogui -Q --timeout 45
+    #[ -z "$HOSTNAME" ] && HOSTNAME=`uname -n`
+    #[ -f $HOME/.keychain/$HOSTNAME-sh ] && \
+    #. $HOME/.keychain/$HOSTNAME-sh
+    #[ -f $HOME/.keychain/$HOSTNAME-sh-gpg ] && \
+    #. $HOME/.keychain/$HOSTNAME-sh-gpg
+
     # note add AddKeysToAgent yes to ~/.ssh/config
-    eval (keychain --eval --agents ssh,gpg --quiet --nogui -Q --timeout 45)
+    keychain --eval --agents ssh,gpg --quiet --nogui -Q --timeout 45 | source
   end
 
   if test -n "$EDITOR"
@@ -116,6 +143,16 @@ if status --is-interactive
 
   if type -q zoxide
     zoxide init fish | source
+  end
+
+  if type -q sudoedit
+    # https://github.com/microsoft/vscode-remote-release/issues/1688#issuecomment-1708577380
+    if type -q code
+      alias sudocode 'SUDO_EDITOR="$(which code) --wait" sudoedit'
+    end
+    if type -q code-insiders
+      alias sudocode-insiders 'SUDO_EDITOR="$(which code-insiders) --wait" sudoedit'
+    end
   end
 
   source ~/.config/fish/helpers/advanced_greeting.fish
