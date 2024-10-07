@@ -68,7 +68,7 @@ end
 
 # check if miniconda is installed
 if test -d ~/miniconda3
-  ~/miniconda3/etc/fish/conf.d/conda.fish
+  source ~/miniconda3/etc/fish/conf.d/conda.fish
 end
 
 #if type -q gpg-agent
