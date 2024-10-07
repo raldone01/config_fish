@@ -66,35 +66,40 @@ if type -q podman
   end
 end
 
+# check if miniconda is installed
+if test -d ~/miniconda3
+  ~/miniconda3/etc/fish/conf.d/conda.fish
+end
+
+#if type -q gpg-agent
+#  # gpg-agent.socket
+#  # gpg-agent-extra.socket
+#  # gpg-agent-browser.socket
+#  # gpg-agent-ssh.socket
+#  # dirmngr.socket
+#  set -ex SSH_AGENT_PID
+#
+#  if not set -q SSH_AUTH_SOCK
+#    set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
+#  end
+#else
+if type -q keychain
+  # To make keychain available in plasma:
+
+  ## nano $HOME/.config/plasma-workspace/env/keychain.sh
+  #!/bin/bash
+  #keychain --agents ssh,gpg --quiet --nogui -Q --timeout 45
+  #[ -z "$HOSTNAME" ] && HOSTNAME=`uname -n`
+  #[ -f $HOME/.keychain/$HOSTNAME-sh ] && \
+  #. $HOME/.keychain/$HOSTNAME-sh
+  #[ -f $HOME/.keychain/$HOSTNAME-sh-gpg ] && \
+  #. $HOME/.keychain/$HOSTNAME-sh-gpg
+
+  # note add AddKeysToAgent yes to ~/.ssh/config
+  keychain --eval --agents ssh,gpg --quiet --nogui -Q --timeout 45 | source
+end
+
 if status --is-interactive
-  #if type -q gpg-agent
-  #  # gpg-agent.socket
-  #  # gpg-agent-extra.socket
-  #  # gpg-agent-browser.socket
-  #  # gpg-agent-ssh.socket
-  #  # dirmngr.socket
-  #  set -ex SSH_AGENT_PID
-  #
-  #  if not set -q SSH_AUTH_SOCK
-  #    set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
-  #  end
-  #else
-  if type -q keychain
-    # To make keychain available in plasma:
-
-    ## nano $HOME/.config/plasma-workspace/env/keychain.sh
-    #!/bin/bash
-    #keychain --agents ssh,gpg --quiet --nogui -Q --timeout 45
-    #[ -z "$HOSTNAME" ] && HOSTNAME=`uname -n`
-    #[ -f $HOME/.keychain/$HOSTNAME-sh ] && \
-    #. $HOME/.keychain/$HOSTNAME-sh
-    #[ -f $HOME/.keychain/$HOSTNAME-sh-gpg ] && \
-    #. $HOME/.keychain/$HOSTNAME-sh-gpg
-
-    # note add AddKeysToAgent yes to ~/.ssh/config
-    keychain --eval --agents ssh,gpg --quiet --nogui -Q --timeout 45 | source
-  end
-
   if test -n "$EDITOR"
     if type -q nano
       set -l nano_full_path (command -v nano)
