@@ -29,7 +29,13 @@ if type -q pyenv
 end
 
 if type -q flatpak
-  set -x XDG_DATA_DIRS $XDG_DATA_DIRS:~/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share
+  # test if these paths are already in XDG_DATA_DIRS
+  if not string match -q -- ~/.local/share/flatpak/exports/share $XDG_DATA_DIRS
+    set -x XDG_DATA_DIRS $XDG_DATA_DIRS:~/.local/share/flatpak/exports/share
+  end
+  if not string match -q -- /var/lib/flatpak/exports/share $XDG_DATA_DIRS
+    set -x XDG_DATA_DIRS $XDG_DATA_DIRS:/var/lib/flatpak/exports/share
+  end
 end
 
 # early load tide_config
