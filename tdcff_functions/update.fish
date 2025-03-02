@@ -1,5 +1,5 @@
 #!/bin/fish
-function tdc_update --description "Update the system" --argument build_kernels "Build git kernels"
+function tdc_update --description "Update the system" --argument build_kernels
   set -l fish_binary (command -v fish)
   echo "Updating system packages"
   if type -q pacman
