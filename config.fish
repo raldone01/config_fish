@@ -28,6 +28,11 @@ if type -q pyenv
   pyenv init - | source
 end
 
+if type -q npm
+  set -x NPM_CONFIG_PREFIX $HOME/.npm-global
+  fish_add_path $NPM_CONFIG_PREFIX/bin
+end
+
 if type -q flatpak
   # test if these paths are already in XDG_DATA_DIRS
   if not string match -q -- ~/.local/share/flatpak/exports/share $XDG_DATA_DIRS
