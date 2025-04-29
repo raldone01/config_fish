@@ -7,7 +7,7 @@ if not type -q fisher && not test -e $fisher_path
   echo "curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher"
   curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
 
-  fisher install jorgebucaran/fisher IlanCosman/tide@v5 jorgebucaran/nvm.fish
+  fisher install jorgebucaran/fisher IlanCosman/tide jorgebucaran/nvm.fish
 end
 
 set -p fish_complete_path $fisher_path/completions

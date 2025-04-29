@@ -43,11 +43,6 @@ if type -q flatpak
   end
 end
 
-# early load tide_config
-if test -f ~/.config/fish/tide_config.fish
-  source ~/.config/fish/tide_config.fish
-end
-
 for f in ~/.config/fish/tdcff_functions/*.fish
   #echo "sourcing $f"
   source $f
