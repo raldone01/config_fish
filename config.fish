@@ -94,7 +94,7 @@ if type -q keychain
 
   ## nano $HOME/.config/plasma-workspace/env/keychain.sh
   #!/bin/bash
-  #keychain --agents ssh,gpg --quiet --nogui -Q --timeout 45
+  #keychain --quiet --nogui -Q --timeout 45
   #[ -z "$HOSTNAME" ] && HOSTNAME=`uname -n`
   #[ -f $HOME/.keychain/$HOSTNAME-sh ] && \
   #. $HOME/.keychain/$HOSTNAME-sh
@@ -102,7 +102,7 @@ if type -q keychain
   #. $HOME/.keychain/$HOSTNAME-sh-gpg
 
   # note add AddKeysToAgent yes to ~/.ssh/config
-  keychain --eval --agents ssh,gpg --quiet --nogui -Q --timeout 45 | source
+  keychain --eval --quiet --nogui -Q --timeout 45 | source
 end
 
 if status --is-interactive
