@@ -77,19 +77,7 @@ if test -d ~/miniconda3
   source ~/miniconda3/etc/fish/conf.d/conda.fish
 end
 
-#if type -q gpg-agent
-#  # gpg-agent.socket
-#  # gpg-agent-extra.socket
-#  # gpg-agent-browser.socket
-#  # gpg-agent-ssh.socket
-#  # dirmngr.socket
-#  set -ex SSH_AGENT_PID
-#
-#  if not set -q SSH_AUTH_SOCK
-#    set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
-#  end
-#else
-if type -q keychain
+if type -q keychain && tdc_is_proper_user
   # To make keychain available in plasma:
 
   ## nano $HOME/.config/plasma-workspace/env/keychain.sh

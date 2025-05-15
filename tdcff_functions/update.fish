@@ -7,7 +7,7 @@ function tdc_update --description "Update the system" --argument build_kernels
     if test -z "$build_kernels"
       set -a pacman_options --ignore "linux-*-git" --ignore "linux-*-git-headers" --ignore "linux-*-git-docs" --ignore linux-git --ignore linux-git-headers --ignore linux-git-docs
     end
-    if type -q yay
+    if type -q yay && tdc_is_proper_user
       echo "Running yay -Syu"
       yay --sudoloop -Syu --devel $pacman_options
     else
@@ -24,18 +24,18 @@ function tdc_update --description "Update the system" --argument build_kernels
     echo "Failed to update system packages."
     echo "Unknown system package manager or distribution."
   end
-  if type -q rustup
+  if type -q rustup && tdc_is_proper_user
     echo "Updating rustup"
     rustup self update
     echo "Updating the rust toolchain"
     rustup update
   end
   # https://stackoverflow.com/a/66049504/4479969
-  if type -q cargo
+  if type -q cargo && tdc_is_proper_user
     echo "Updating the crates installed with 'cargo install'"
     cargo install $(cargo install --list | grep -E '^[a-z0-9_-]+ v[0-9.]+:$' | cut -f1 -d' ')
   end
-  if type -q fisher
+  if type -q fisher && tdc_is_proper_user
     echo "Updating the fisher fish plugins"
     fisher update
   end
