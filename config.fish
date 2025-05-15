@@ -105,6 +105,16 @@ if type -q keychain
   keychain --eval --quiet --nogui -Q --timeout 45 | source
 end
 
+if type -q pnpm
+  set -gx PNPM_HOME "~/.local/share/pnpm"
+  if not string match -q -- $PNPM_HOME $PATH
+    set -gx PATH "$PNPM_HOME" $PATH
+  end
+end
+
+# enable bake for better build performance in docker-compose
+set -x COMPOSE_BAKE true
+
 if status --is-interactive
   if test -n "$EDITOR"
     if type -q nano
@@ -168,10 +178,3 @@ if status --is-interactive
 
   source ~/.config/fish/helpers/advanced_greeting.fish
 end
-
-# pnpm
-set -gx PNPM_HOME "/home/main/.local/share/pnpm"
-if not string match -q -- $PNPM_HOME $PATH
-  set -gx PATH "$PNPM_HOME" $PATH
-end
-# pnpm end
