@@ -47,6 +47,13 @@ if type -q flatpak
   end
 end
 
+if type -q pyenv
+  # https://github.com/pyenv/pyenv
+  set -Ux PYENV_ROOT $HOME/.pyenv
+  test -d $PYENV_ROOT/bin; and fish_add_path $PYENV_ROOT/bin
+  pyenv init - fish | source
+end
+
 for f in ~/.config/fish/tdcff_functions/*.fish
   #echo "sourcing $f"
   source $f
