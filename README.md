@@ -62,4 +62,5 @@ tdc_btrfs_convert --subvol=true --nocow=true  ~/.steam/root/steamapps
 tdc_btrfs_convert --subvol=true --nocow=true  ~/.local/share/Steam/steamapps/
 tdc_btrfs_convert --subvol=true --nocow=true  ~/.local/share/baloo/
 tdc_btrfs_convert --subvol=true --nocow=false ~/.cargo/
+tdc_btrfs_convert --subvol=true --nocow=false /var/lib/flatpak/
 ```
