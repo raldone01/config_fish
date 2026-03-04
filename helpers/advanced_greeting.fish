@@ -73,7 +73,7 @@ function fish_greeting
     set -l terminal_height (tput lines)
     set -l terminal_width (tput cols)
 
-    function __before_pic_textrivate_mode -S
+    function __before_pic_text -S
         # print login message
 
         if test $terminal_width -gt 134;
@@ -86,6 +86,7 @@ function fish_greeting
         end
 
         if type -q boxes
+            and type -q figlet
             and test $terminal_width -gt 77;
             and test $terminal_height -gt 40
             printf "%s" $date_str | figlet -t | boxes -d scroll
@@ -102,7 +103,7 @@ function fish_greeting
     end
     function __after_pic_text -S
     end
-    set -l before_pic_text (__before_pic_textrivate_mode)
+    set -l before_pic_text (__before_pic_text)
     set -l after_pic_text (__after_pic_text)
 
     set -l before_lines (printf "%s\n" $before_pic_text | wc -l)
