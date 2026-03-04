@@ -34,6 +34,22 @@ function rand_pic_file
     end
 end
 
+function __show_image
+    # takes three arguments: image path, desired width, desired height
+    set -l image_path $argv[1]
+    set -l desired_width $argv[2]
+    set -l desired_height $argv[3]
+
+    if test -n "$image_path"
+        and type -q $image_viewer
+        if test "$image_viewer" = chafa
+            $image_viewer --size "$desired_width"x"$desired_height" "$image_path"
+        else if contains -- "$image_viewer" viu tiv
+            $image_viewer -w "$desired_width" -h "$desired_height" "$image_path"
+        end
+    end
+end
+
 function calm
     if not type -q $image_viewer
         echo "No image viewer found!"
@@ -45,27 +61,14 @@ function calm
         return
     end
     set -l filename (basename $rand_pic_file)
+    set -l terminal_height (tput lines)
+    set -l terminal_width (tput cols)
     echo "Featured pic $filename (Run pic_not_nice to delete)"
-    $image_viewer $argv $rand_pic_file
+    set -l image_height (math $terminal_height - 3)
+    __show_image $rand_pic_file $terminal_width $image_height
 end
 
 function fish_greeting
-    function __show_image -S
-        # takes three arguments: image path, desired width, desired height
-        set -l image_path $argv[1]
-        set -l desired_width $argv[2]
-        set -l desired_height $argv[3]
-
-        if test -n "$image_path"
-            and type -q $image_viewer
-            if test "$image_viewer" = chafa
-                $image_viewer --size "$desired_width"x"$desired_height" "$image_path"
-            else if contains -- "$image_viewer" viu tiv
-                $image_viewer -w "$desired_width" -h "$desired_height" "$image_path"
-            end
-        end
-    end
-
     set -l rand_pic_file (rand_pic_file)
     set -l terminal_height (tput lines)
     set -l terminal_width (tput cols)
